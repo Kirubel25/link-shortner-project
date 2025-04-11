@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: link_shortener_web
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8000:80"
+      - "5173:5173"
+    expose:
+      - "80"
+      - "5173"
+    command: bash -c "php artisan config:clear &&
+               php artisan migrate &&
+               apache2-foreground"
+    networks:
+      - link-shortener-network
+
+  db:
+    image: mysql:5.7
+    container_name: link_shortener_db
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: link_shortener
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - link-shortener-network
+
+  proxy:
+    image: haproxy:latest
+    container_name: link_shortener_proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    networks:
+      - link-shortener-network
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  link-shortener-network:
+    driver: bridge
