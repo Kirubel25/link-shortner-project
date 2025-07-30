@@ -3,14 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\ShortLink;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+    
     public function index()
     {
-        $links = ShortLink::latest()->get();
-        return view('admin.dashboard', compact('links'));
+        $links = ShortLink::with('user')->latest()->get();
+        $totalLinks = $links->count();
+        $totalClicks = $links->sum('clicks');
+        $mostClickedLink = $links->sortByDesc('clicks')->first();
+        $totalUsers = User::count(); 
+    
+        return view('admin.dashboard', compact('links', 'totalLinks', 'totalClicks', 'mostClickedLink', 'totalUsers'));
+    
     }
 
     public function destroy($id)

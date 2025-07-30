@@ -6,17 +6,24 @@ use App\Models\ShortLink;
 
 class ShortLinkService
 {
-    public function findOrCreate(string $originalUrl): ShortLink
+    public function findOrCreate(string $originalUrl, ?int $userId = null): ShortLink
     {
-        $existing = ShortLink::where('original_url', $originalUrl)->first();
+        if ($userId != null) {
+            $existing = ShortLink::where(['original_url' => $originalUrl, 'user_id' => $userId])->first();
+        }else {
+            $existing = ShortLink::where(['original_url' => $originalUrl, 'user_id' => null])->first();
+        }
 
         if ($existing) {
             return $existing;
         }
 
+        // dd($userId);
+
         return ShortLink::create([
             'original_url' => $originalUrl,
             'short_code' => $this->generateUniqueCode(),
+            'user_id' => $userId,
         ]);
     }
 

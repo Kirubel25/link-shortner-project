@@ -11,17 +11,24 @@ A Laravel-based URL shortening service powered by Docker.
 - Built-in Admin user seeder
 - Simple login/logout system (no Breeze, no Jetstream)
 - URL shortening with unique short codes
-- Redirection handling for shortened URLs
-- Admin interface to manage shortened URLs and view usage statistics
+- Redirection to original URLs via short links
+- Admin interface to:
+  - Manage shortened URLs
+  - View usage statistics and analytics
+  - Visualize link activity using charts
+  - Track users associated with generated links
+- Eloquent relationships with eager loading for performance
 
 ---
 ## 🚀 Project Overview & Goals
 
 This project is a URL shortening service built with Laravel, Dockerized for easy deployment, and designed to handle basic URL shortening functionalities:
-- Accepting a URL and generating a unique short code.
-- Redirecting users to the original URL when visiting the short code.
-- Admin interface for managing the shortened URLs and viewing their usage statistics.
-- Containerization with Docker to streamline development and deployment.
+- Accepting long URLs and generating unique short codes
+- Redirecting visitors via shortened links
+- Authenticating users (basic login system)
+- Admin management for URLs, users, and statistics
+- Displaying analytics via a dashboard (graphs, counters)
+- Developer-friendly Docker setup
 
 ---
 
