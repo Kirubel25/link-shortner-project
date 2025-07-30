@@ -32,10 +32,11 @@
                                         </a>
                                     </td>
                                     <td class="text-center py-2 px-4">
-                                        <a href="{{ $link->short_code }}" target="_blank" class="text-decoration-none text-success">
-                                            {{ $link->short_code }}
-                                        </a>
+                                    <a href="{{ url('s/' . $link->short_code) }}" target="_blank" class="text-decoration-none text-success">
+                                        {{ $link->short_code }}
+                                    </a>
                                     </td>
+
                                     <td class="text-center py-2 px-4">{{ $link->clicks }}</td>
                                     <td class="text-center py-2 px-4">{{ $link->created_at->format('d M Y') }}</td>
                                     <td class="text-center py-2 px-4">

@@ -2,37 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ShortLink;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreShortLinkRequest;
+use App\Services\ShortLinkService;
+use Illuminate\Http\RedirectResponse;
 
 class ShortLinkController extends Controller
 {
+    protected ShortLinkService $shortLinkService;
+
+    public function __construct(ShortLinkService $shortLinkService)
+    {
+        $this->shortLinkService = $shortLinkService;
+    }
+
     public function index()
     {
         return view('home');
     }
 
-    public function store(Request $request)
+    public function store(StoreShortLinkRequest $request): RedirectResponse
     {
-        $request->validate([
-            'original_url' => 'required|url',
-        ]);
+        $link = $this->shortLinkService->findOrCreate($request->input('original_url'));
 
-        $shortCode = substr(md5(uniqid()), 0, 6);
-
-        ShortLink::create([
-            'original_url' => $request->original_url,
-            'short_code' => $shortCode,
-        ]);
-
-        return back()->with('success', url('/s/' . $shortCode));
+        return back()->with('success', url('/s/' . $link->short_code));
     }
 
-    public function redirect($code)
+    public function redirect(string $code): RedirectResponse
     {
-        $link = ShortLink::where('short_code', $code)->firstOrFail();
-        $link->increment('clicks');
-        return redirect($link->original_url);
-    }
+        $link = $this->shortLinkService->getByCode($code);
 
+        $this->shortLinkService->incrementClicks($link);
+
+        return redirect()->to($link->original_url);
+    }
 }
